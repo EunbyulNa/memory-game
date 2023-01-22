@@ -22,17 +22,20 @@ let cardsData = [
   {imgSrc: "./imgs/06.jpg", name:"06"},
 ]
 
+document.addEventListener( "DOMContentLoaded", function() {
+  random();
+  displayCards();
+});
+
 //randomize cards data
 function random() {
   cardsData.sort( () => Math.random() - 0.5);
   return cardsData;
 }
 
-//Generate radom card data and display it
+//display it
  function displayCards() {
-    let randomCards = random();
-
-    randomCards.forEach( (item) => {
+    cardsData.forEach( (item) => {
     //createElement
     let card = document.createElement("div");
     let face = document.createElement("img");
@@ -53,22 +56,28 @@ function random() {
     card.appendChild(face);
     card.appendChild(back);
 
-    //each card click event
+  });
+
+  //each card click event
+  let cards = document.querySelectorAll('.card');
+  cards.forEach( (card) => {
     card.addEventListener("click", function(e) {
       card.classList.toggle('toggleCard');
-      checkCard(e)
-
+      checkCard(e);
     });
   });
+
 };
 
 
 function checkCard(e) {
    let checked = e.target; //clicked card
 
+   //add flipped classlist to the clicked card div
    checked.classList.add('flipped');
    let flippedCards = document.querySelectorAll(".flipped");
 
+   //check flippedCards are matched or not
   if(flippedCards.length === 2){
     if(flippedCards[0].getAttribute("name") === flippedCards[1].getAttribute("name")){
       console.log("match");
@@ -86,10 +95,21 @@ function checkCard(e) {
         },1000);
       });
     }
+    playerLives--;
+    playerLivesCount.textContent = playerLives;
+
+    if(playerLives === 0){
+      console.log("over");
+      resetGame();
+    }
   }
-
-
 }
 
+function resetGame() {
+  playerLives = 6;
+  playerLivesCount.textContent = playerLives;
 
-displayCards()
+  section.innerHTML ="";
+  random();
+  displayCards();
+}
