@@ -1,6 +1,8 @@
 const section = document.querySelector("section");
 const playerLivesCount = document.querySelector("span");
 let playerLives = 6;
+let msg = document.querySelector(".msg");
+let btn = document.querySelector(".btn");
 
 
 //Add player lives count
@@ -63,15 +65,20 @@ function random() {
   cards.forEach( (card) => {
     card.addEventListener("click", function(e) {
       card.classList.toggle('toggleCard');
+      card.style.pointerEvents = "all";
       checkCard(e);
     });
   });
 
+  //empty the msg
+   msg.innerHTML = "";
+   btn.style.display = "none";
 };
 
 
 function checkCard(e) {
    let checked = e.target; //clicked card
+   let toggleCards = document.querySelectorAll(".toggleCard");
 
    //add flipped classlist to the clicked card div
    checked.classList.add('flipped');
@@ -80,36 +87,71 @@ function checkCard(e) {
    //check flippedCards are matched or not
   if(flippedCards.length === 2){
     if(flippedCards[0].getAttribute("name") === flippedCards[1].getAttribute("name")){
-      console.log("match");
+
+      //When they match
       flippedCards.forEach( (card) => {
         card.classList.remove('flipped');
         card.style.pointerEvents = "none";
       })
 
     }else{
-      console.log("wrong");
+     //When they are not match
       flippedCards.forEach( (card) => {
         card.classList.remove('flipped');
         setTimeout( () => {
           card.classList.remove('toggleCard');
         },1000);
       });
+      playerLives--;
+      playerLivesCount.textContent = playerLives;
     }
-    playerLives--;
-    playerLivesCount.textContent = playerLives;
 
+    //When loose the game
     if(playerLives === 0){
-      console.log("over");
-      resetGame();
+      toggleCards.forEach( (card) => {
+        card.classList.remove("toggleCard");
+      })
+
+    let cards = document.querySelectorAll(".card");
+    cards.forEach( (card) => {
+        card.style.pointerEvents = "none";
+    });
+
+    looseMsg();
+    restartGame();
     }
+  }
+  //check if the user won the game or not
+  if(toggleCards.length === 12) {
+   winMsg();
+   restartGame();
   }
 }
 
-function resetGame() {
-  playerLives = 6;
-  playerLivesCount.textContent = playerLives;
 
-  section.innerHTML ="";
-  random();
-  displayCards();
+
+function winMsg() {
+
+  btn.style.display = "block";
+  msg.innerHTML = "Yay! well done!";
+  btn.innerHTML = "Play again";
+
+}
+
+function looseMsg() {
+
+  btn.style.display = "block";
+  msg.innerHTML = "You loose";
+  btn.innerHTML = "Try again";
+
+}
+
+function restartGame() {
+  btn.addEventListener("click", function () {
+    playerLives = 6;
+    playerLivesCount.textContent = playerLives;
+    section.innerHTML = '';
+    random();
+    displayCards();
+  })
 }
