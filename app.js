@@ -141,7 +141,7 @@ function winMsg() {
 function looseMsg() {
 
   btn.style.display = "block";
-  msg.innerHTML = "You loose";
+  msg.innerHTML = "You lose";
   btn.innerHTML = "Try again";
 
 }
